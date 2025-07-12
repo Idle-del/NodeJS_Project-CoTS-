@@ -11,9 +11,10 @@ const carBookingSchema = mongoose.Schema({
     },
     startDate: Date,
     endDate: Date,
+    totalCost: Number,
     status: {
         type: String,
-        enum: ['pending', 'confirmed', 'cancelled'],
+        enum: ['pending', 'confirmed'],
         default: 'pending'
     }
 });

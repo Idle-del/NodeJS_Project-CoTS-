@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const carSchema = mongoose.Schema({
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User"
+    },
     name: {
         type: String,
         required: true
@@ -14,17 +19,17 @@ const carSchema = mongoose.Schema({
         required: true
     },
     rentPerDay: {
-        type: String,
-        required: true
-    },
-    isAvailable: {
-        type: Boolean,
-        default: true,
+        type: Number,
         required: true
     },
     location: {
         type: String,
         required: true
+    },
+    status: {
+        type: String,
+        enum: ['available', 'booked'],
+        default: 'available'
     }
 });
 
