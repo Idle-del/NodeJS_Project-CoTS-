@@ -1,0 +1,22 @@
+import mongoose from "mongoose";
+
+const carBookingSchema = mongoose.Schema({
+    customerId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    carId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Car"
+    },
+    startDate: Date,
+    endDate: Date,
+    status: {
+        type: String,
+        enum: ['pending', 'confirmed', 'cancelled'],
+        default: 'pending'
+    }
+});
+
+const CarBooking = mongoose.model("CarBooking", carBookingSchema);
+export default CarBooking;

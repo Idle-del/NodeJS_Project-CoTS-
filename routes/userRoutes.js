@@ -6,10 +6,10 @@ import token from "../middleware/tokenHandler.js";
 const router = express.Router();
 
 // router.post('/register', userRegister);
-// router.post('login',token, userLogin);
+// router.post('login', userLogin);
 
-router.post("/register",userRegister);
+router.route("/register").post(userRegister);
 
-router.post("/login", userLogin);
+router.route("/login").post(userLogin);
 
 export default router;
