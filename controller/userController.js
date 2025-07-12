@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
+import sendMail from "../utils/mailSender.js";
+import { registerMail } from "../static/registerMail.js";
 
 const userRegister = async (req, res) => {
   const { username, email, password, role } = req.body;
@@ -25,19 +27,26 @@ const userRegister = async (req, res) => {
     username,
     email,
     password: hashedPassword,
-    role
+    role,
   });
   if (user) {
     res.status(201).json({
       _id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
   } else {
     res.status(400).json({
       message: "User data not valid !",
     });
   }
+  const data = {
+        from : "magarkiran436@gmail.com",
+        to : email,
+        subject : "Thank you for register",
+        html : registerMail()
+    }
+    sendMail(data);
   res.status(200).json({
     message: "User registered Successfully ! ",
   });
@@ -58,7 +67,7 @@ const userLogin = async (req, res) => {
           username: user.username,
           email: user.email,
           id: user.id,
-          role: user.role
+          role: user.role,
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
