@@ -4,10 +4,15 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
 import carRoutes from "./routes/carRoutes.js";
 import carBookingRoutes from "./routes/carBookingRoutes.js";
+import cors from "cors";
 dotenv.config();
 
 connectDB();
 const app = express();
+
+app.use(cors({
+  origin: '*'
+}));
 
 app.use(express.json());
 app.use('/api/users', userRoutes);
