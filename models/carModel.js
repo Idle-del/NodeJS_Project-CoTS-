@@ -30,6 +30,10 @@ const carSchema = mongoose.Schema({
         type: String,
         enum: ['available', 'booked'],
         default: 'available'
+    },
+    image: {
+        type: String,
+        required: true
     }
 });
 

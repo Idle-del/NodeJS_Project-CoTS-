@@ -6,14 +6,14 @@ const getAllCars = async (req, res) => {
 };
 
 const addCar = async (req, res) => {
-    const {name, model, brand, rentPerDay, location, status} = req.body;
-    if(!name || !model || !brand || !rentPerDay || !status || !location){
+    const {name, model, brand, rentPerDay, location, status, image} = req.body;
+    if(!name || !model || !brand || !rentPerDay || !status || !location || !image) {
         return res.status(400).json({
             message: "All fields are Mandatory ! "
         });
     }
     const car = await Car.create({
-        name, model, brand, rentPerDay, status, location, user_id: req.user.id
+        name, model, brand, rentPerDay, status, location, user_id: req.user.id, image
     });
     res.status(201).json(car);
 };

@@ -1,5 +1,7 @@
 import Car from "../models/carModel.js";
 import CarBooking from "../models/carBookingModel.js";
+import { bookingSuccessful } from "../static/bookingSuccessful.js";
+import sendMail from "../utils/mailSender.js";
 
 const createBooking = async (req, res) => {
     const {carId, startDate, endDate} = req.body;
@@ -33,6 +35,17 @@ const createBooking = async (req, res) => {
     car.status = "booked";
     await car.save();
     res.status(201).json(booking);
+
+    const data = {
+        from : "magarkiran436@gmail.com",
+        to : req.user.email,
+        subject : "Your Booking is Confirmed",
+        html : bookingSuccessful({ username: req.user.username,
+            carName: car.name,  carBrand: car.brand,
+            carModel: car.model, rentPerDay: car.rentPerDay, location: car.location,
+            bookingId: booking._id, startDate, endDate, totalCost, carImageUrl: car.image })
+    }
+    sendMail(data);
 };
 
 const getMyBookings = async (req, res) => {
