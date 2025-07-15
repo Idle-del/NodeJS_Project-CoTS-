@@ -4,9 +4,9 @@ import { isAdmin, isLoggedIn } from "../middleware/userMiddleware.js";
 
 const router = express.Router();
 
-router.route("/").get(getAllCars);
+router.route("/").get(isLoggedIn,getAllCars);
 router.route("/addCar").post(isLoggedIn, isAdmin, addCar);
-router.route("/:id").get(getCar);
+router.route("/:id").get(isLoggedIn, getCar);
 router.route("/:id").put(isLoggedIn, isAdmin, updateCar);
 router.route("/:id").delete(isLoggedIn, isAdmin, deleteCar);
 
