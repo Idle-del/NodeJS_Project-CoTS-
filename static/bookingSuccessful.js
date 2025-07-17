@@ -9,94 +9,172 @@ export const bookingSuccessful = ({
   endDate,
   totalCost,
   bookingId,
-  carImageUrl, // <-- new parameter for image URL
+  carImageUrl,
 }) => {
   return `
   <!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Car Booking Confirmation</title>
+    <title>Booking Confirmation</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
         margin: 0;
         padding: 0;
+        background: #f3f4f6;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        color: #333;
       }
       .email-container {
         max-width: 600px;
-        background: #fff;
-        margin: 20px auto;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
       }
       .header {
-        background-color: #007bff;
+        background: linear-gradient(135deg, #667eea, #764ba2);
         color: white;
-        padding: 15px;
+        padding: 30px 20px;
         text-align: center;
-        border-radius: 8px 8px 0 0;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 28px;
       }
       .content {
-        padding: 20px;
+        padding: 30px 25px;
       }
-      .details {
-        background-color: #f9f9f9;
-        padding: 15px;
-        border-radius: 5px;
-        margin-top: 10px;
-        line-height: 1.6;
+      .content h2 {
+        margin-top: 0;
+        font-size: 22px;
+        color: #764ba2;
       }
       .car-image {
         width: 100%;
+        height: auto;
         max-height: 250px;
         object-fit: cover;
-        border-radius: 5px;
-        margin-bottom: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+      }
+      .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 10px;
+      }
+      .details-item {
+        background-color: #f8f8f8;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 15px;
+        word-wrap: break-word;
+      }
+      .details-item strong {
+        display: block;
+        color: #555;
+        margin-bottom: 5px;
       }
       .footer {
+        padding: 20px;
+        font-size: 13px;
         text-align: center;
-        font-size: 12px;
-        color: #888;
-        margin-top: 30px;
+        color: #777;
+        background-color: #f5f5f5;
+      }
+      .footer a {
+        color: #764ba2;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      /* Mobile responsive */
+      @media only screen and (max-width: 500px) {
+        .details-grid {
+          grid-template-columns: 1fr;
+        }
+        .header h1 {
+          font-size: 22px;
+        }
+        .content h2 {
+          font-size: 18px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="email-container">
       <div class="header">
-        <h1>Booking Confirmed</h1>
+        <h1>Your Booking is Confirmed! 🎉</h1>
       </div>
       <div class="content">
         <h2>Hi ${username},</h2>
-        <p>Thank you for booking with us. Your car booking is confirmed. Below are the details:</p>
-        
-        ${
-          carImageUrl
-            ? `<img src="${carImageUrl}" alt="Image of ${carName}" class="car-image" />`
-            : ""
-        }
-        
-        <div class="details">
-          <strong>Car Name:</strong> ${carName}<br />
-          <strong>Brand:</strong> ${carBrand}<br />
-          <strong>Model:</strong> ${carModel}<br />
-          <strong>Rent Per Day:</strong> $${rentPerDay}<br />
-          <strong>Location:</strong> ${location}<br /><br />
+        <p>Thanks for choosing <strong>Rent-A-Car</strong>! Your booking has been confirmed and your ride will be ready as scheduled.</p>
 
-          <strong>Booking ID:</strong> ${bookingId}<br />
-          <strong>Start Date:</strong> ${new Date(
-            startDate
-          ).toDateString()}<br />
-          <strong>End Date:</strong> ${new Date(endDate).toDateString()}<br />
-          <strong>Total Cost:</strong> $${totalCost}
+        ${carImageUrl ? `
+          <img 
+            src="${carImageUrl}" 
+            alt="Image of ${carName}" 
+            class="car-image"
+            style="display: block; max-width: 100%; height: auto;"
+          />
+          <p style="color: #888; font-size: 12px; text-align: center; padding: 5px 0;">
+            Can't see the car? <a href="${carImageUrl}" style="color: #764ba2;">View it online</a>
+          </p>
+        ` : ''}
+
+        <div class="details-grid">
+          <div class="details-item">
+            <strong>Car Name</strong>
+            ${carName}
+          </div>
+          <div class="details-item">
+            <strong>Brand</strong>
+            ${carBrand}
+          </div>
+          <div class="details-item">
+            <strong>Model</strong>
+            ${carModel}
+          </div>
+          <div class="details-item">
+            <strong>Rent Per Day</strong>
+            $${rentPerDay}
+          </div>
+          <div class="details-item">
+            <strong>Location</strong>
+            ${location}
+          </div>
+          <div class="details-item">
+            <strong>Booking ID</strong>
+            ${bookingId}
+          </div>
+          <div class="details-item">
+            <strong>Start Date</strong>
+            ${new Date(startDate).toDateString()}
+          </div>
+          <div class="details-item">
+            <strong>End Date</strong>
+            ${new Date(endDate).toDateString()}
+          </div>
+          <div class="details-item" style="grid-column: span 2;">
+            <strong>Total Cost</strong>
+            $${totalCost}
+          </div>
         </div>
-        <p>If you have any questions or need help, feel free to contact us.</p>
+
+        <p style="margin-top: 25px;">
+          If you have any questions or need help, just reply to this email or reach us at
+          <a href="mailto:support@rentacar.com">support@rentacar.com</a>.
+        </p>
       </div>
       <div class="footer">
-        &copy; 2025 YourCarRental.com — All rights reserved
+        &copy; 2025 Rent-A-Car &mdash; All rights reserved<br/>
+        Follow us on 
+        <a href="#">Facebook</a>, 
+        <a href="#">Twitter</a>, 
+        <a href="#">Instagram</a>
       </div>
     </div>
   </body>

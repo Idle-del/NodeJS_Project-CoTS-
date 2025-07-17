@@ -2,50 +2,79 @@ import Car from "../models/carModel.js";
 import CarBooking from "../models/carBookingModel.js";
 import { bookingSuccessful } from "../static/bookingSuccessful.js";
 import sendMail from "../utils/mailSender.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const createBooking = async (req, res) => {
-    const {carId, startDate, endDate} = req.body;
-    if(!carId || !startDate || !endDate) {
-        return res.status(400).json({
-            message: "All fields are mandatory"
-        });
-    }
-    const car = await Car.findById(carId);
-    if(!car) {
-        return res.status(404).json({
-            message: "Car not found"
-        });
-    }
-    if (car.status === "booked") {
-        return res.status(400).json({
-            message: "Car is already booked"
-        });
-    }
-    const days = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24);
-    const totalCost = car.rentPerDay * Math.ceil(days);
-
-    const booking = await CarBooking.create({
-        customerId: req.user.id,
-        carId,
-        startDate,
-        endDate,
-        totalCost,
-        status: "confirmed"
+  const { carId, startDate, endDate } = req.body;
+  if (!carId || !startDate || !endDate) {
+    return res.status(400).json({
+      message: "All fields are mandatory"
     });
-    car.status = "booked";
-    await car.save();
-    res.status(201).json(booking);
+  }
+  
+  const car = await Car.findById(carId);
+  if (!car) {
+    return res.status(404).json({
+      message: "Car not found"
+    });
+  }
+  
+  if (car.status === "booked") {
+    return res.status(400).json({
+      message: "Car is already booked"
+    });
+  }
+  
+  const days = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24);
+  const totalCost = car.rentPerDay * Math.ceil(days);
 
-    const data = {
-        from : "magarkiran436@gmail.com",
-        to : req.user.email,
-        subject : "Your Booking is Confirmed",
-        html : bookingSuccessful({ username: req.user.username,
-            carName: car.name,  carBrand: car.brand,
-            carModel: car.model, rentPerDay: car.rentPerDay, location: car.location,
-            bookingId: booking._id, startDate, endDate, totalCost, carImageUrl: car.image })
+  const booking = await CarBooking.create({
+    customerId: req.user.id,
+    carId,
+    startDate,
+    endDate,
+    totalCost,
+    status: "confirmed"
+  });
+  
+  car.status = "booked";
+  await car.save();
+  res.status(201).json(booking);
+
+  // Fix image URL
+  let carImageUrl;
+  if (car.image) {
+    if (car.image.startsWith('http')) {
+      carImageUrl = car.image;
+    } else {
+      // Normalize path
+      const imagePath = car.image.replace(/^[\\/]/, '');
+      carImageUrl = `${process.env.BASE_URL}/storage/${imagePath}`;
     }
-    sendMail(data);
+  } else {
+    carImageUrl = '';
+  }
+
+  const data = {
+    from: "magarkiran436@gmail.com",
+    to: req.user.email,
+    subject: "Your Booking is Confirmed",
+    html: bookingSuccessful({
+      username: req.user.username,
+      carName: car.name,
+      carBrand: car.brand,
+      carModel: car.model,
+      rentPerDay: car.rentPerDay,
+      location: car.location,
+      bookingId: booking._id,
+      startDate,
+      endDate,
+      totalCost,
+      carImageUrl
+    })
+  };
+  sendMail(data);
 };
 
 const getMyBookings = async (req, res) => {

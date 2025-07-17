@@ -44,7 +44,9 @@ const userRegister = async (req, res) => {
         from : "magarkiran436@gmail.com",
         to : email,
         subject : "Thank you for register",
-        html : registerMail()
+        html : registerMail({
+          username: username,
+        })
     }
     sendMail(data);
   res.status(200).json({
